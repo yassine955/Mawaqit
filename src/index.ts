@@ -4,6 +4,7 @@ import schedule from "node-schedule";
 import { fetchAPI } from "./functions/fetchAPI";
 
 const audio: string = path.join(__dirname, "../src/sounds/adhan.mp3");
+const audio1: string = path.join(__dirname, "../src/sounds/beep.mp3");
 export const PRAYERNAMES: string[] = [
   "Fajr",
   "Dhuhr",
@@ -13,6 +14,7 @@ export const PRAYERNAMES: string[] = [
 ];
 
 (async () => {
+  await PlayAudio(audio1);
   console.log("STARTED ADHAN APP");
   console.log(`--------------------------`);
   console.log(`DATE: ${new Date()}`);

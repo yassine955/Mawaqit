@@ -3,7 +3,7 @@ import { PlayAudio } from "./functions/playAudio";
 import schedule from "node-schedule";
 import { fetchAPI } from "./functions/fetchAPI";
 
-const audio: string = path.join(__dirname, "../src/sounds/adhan.mp3");
+const audio: string = path.join(__dirname, "../src/sounds/adhan1.mp3");
 const audio1: string = path.join(__dirname, "../src/sounds/beep.mp3");
 export const PRAYERNAMES: string[] = [
   "Fajr",

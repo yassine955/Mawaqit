@@ -4,7 +4,7 @@ export const fetchAPI = async () => {
   const currentMonth: number = new Date().getMonth() + 1;
   const currentDay: number = new Date().getDate();
   const currentYear: number = new Date().getFullYear();
-  const api: string = `https://izaachen.de/api/times/${currentYear}/Niederlande/Leiden%20(S%C3%BCdholland).txt`;
+  const api: string = `https://izaachen.de/api/times/${2021}/Niederlande/Leiden%20(S%C3%BCdholland).txt`;
 
   const { data } = await axios.get(api);
 

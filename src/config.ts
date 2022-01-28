@@ -8,5 +8,5 @@ export const PRAYERNAMES: string[] = [
   "'Ishaa",
 ];
 
-export const audio: string = path.join(__dirname, "../src/sounds/azan5.mp3");
+export const audio: string = path.join(__dirname, "../src/sounds/adhan1.mp3");
 export const audio1: string = path.join(__dirname, "../src/sounds/beep.mp3");

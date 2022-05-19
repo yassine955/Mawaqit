@@ -1,7 +1,7 @@
-import Audic from "audic";
+const Audic = require("audic");
 
-export const PlayAudio = async (audio: string) => {
-  const mp3: Audic = new Audic(audio);
+export const PlayAudio = async (audio) => {
+  const mp3 = new Audic(audio);
 
   return await mp3
     .play()

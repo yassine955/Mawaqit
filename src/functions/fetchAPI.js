@@ -1,21 +1,27 @@
 const axios = require("axios");
+const cheerio = require("cheerio");
 
 const fetchAPI = async () => {
-  const currentMonth = new Date().getMonth() + 1;
-  const currentDay = new Date().getDate();
-  const currentYear = new Date().getFullYear();
-  const api = `https://izaachen.de/api/times/${2021}/Niederlande/Leiden%20(S%C3%BCdholland).txt`;
+  const cookie = "currentCity=29263; Domain=www.al-yaqeen.com; Path=/";
 
-  const { data } = await axios.get(api);
-
-  const currentTimes = data["times"][currentMonth][currentDay];
-
-  let PRAYERTIMES = [];
-  Object.keys(currentTimes).map((key, index) => {
-    if (index !== 1) PRAYERTIMES.push(currentTimes[key]["t"]);
+  const res = await axios.get("https://www.al-yaqeen.com/gebedstijden/", {
+    headers: {
+      Cookie: cookie,
+    },
   });
 
-  return PRAYERTIMES;
+  const $ = cheerio.load(res.data);
+  const prayers = [];
+
+  $("tr.prayer-table__day.current td").each((i, el) => {
+    const time = $(el).text().trim();
+
+    prayers.push(time);
+  });
+
+  prayers.splice(1, 1);
+
+  return prayers;
 };
 
 exports.fetchAPI = fetchAPI;

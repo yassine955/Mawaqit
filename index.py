@@ -12,9 +12,12 @@ pygame.init()
 
 print("start")
 print(datetime.now().time().replace(second=0, microsecond=0).strftime("%H:%M"))
-my_sound = pygame.mixer.Sound("beep.mp3")
 
-my_sound.play()
+try:
+    my_sound = pygame.mixer.Sound("beep.mp3")
+    my_sound.play()
+except pygame.error as e:
+    print("Error playing audio:", e)
 
 
 def fetch_prayer_times():

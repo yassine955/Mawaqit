@@ -18,7 +18,7 @@ print("start")
 print(datetime.now().time().replace(second=0, microsecond=0).strftime("%H:%M"))
 
 try:
-    my_sound = pygame.mixer.Sound(os.path.join(current_path, "beep.mp3"))
+    my_sound = pygame.mixer.Sound(os.path.join(current_path, "beep.wav"))
     my_sound.play()
 except pygame.error as e:
     print("Error playing audio:", e)
@@ -83,14 +83,14 @@ while True:
     if current_time in prayer_times:
         print(f"It's time for prayer: {current_time}")
         # Play audio file when it's time for prayer
-        # playsound("azan5.mp3")
+        # playsound("azan5.wav")
 
-        x = pygame.mixer.Sound(os.path.join(current_path, "azan5.mp3"))
+        x = pygame.mixer.Sound(os.path.join(current_path, "azan5.wav"))
 
         x.play()
 
     else:
-        # playsound("beep.mp3")
+        # playsound("beep.wav")
         print(f"Not time: {current_time}")
 
     # Delay for 1 minute before checking again

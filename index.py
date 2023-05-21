@@ -85,7 +85,7 @@ while True:
         # Play audio file when it's time for prayer
         # playsound("azan5.mp3")
 
-        x = pygame.mixer.Sound(os.path.join(current_path, "azan5.mp3")
+        x = pygame.mixer.Sound(os.path.join(current_path, "azan5.mp3"))
 
         x.play()
 

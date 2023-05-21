@@ -2,13 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, time
 import time as t
-from playsound import playsound
+
 from pathlib import Path
+
+import pygame
+
+pygame.init()
 
 
 print("start")
 print(datetime.now().time().replace(second=0, microsecond=0).strftime("%H:%M"))
-playsound("beep.mp3")
+my_sound = pygame.mixer.Sound("beep.mp3")
+
+my_sound.play()
 
 
 def fetch_prayer_times():
@@ -70,9 +76,14 @@ while True:
     if current_time in prayer_times:
         print(f"It's time for prayer: {current_time}")
         # Play audio file when it's time for prayer
-        playsound("azan5.mp3")
+        # playsound("azan5.mp3")
+
+        x = pygame.mixer.Sound("azan5.mp3")
+
+        x.play()
+
     else:
-        playsound("beep.mp3")
+        # playsound("beep.mp3")
         print(f"Not time: {current_time}")
 
     # Delay for 1 minute before checking again

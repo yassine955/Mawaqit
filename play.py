@@ -1,5 +1,4 @@
 import pygame
-import keyboard
 import requests
 import os
 
@@ -34,19 +33,10 @@ def main():
 
     play_audio(file_path)
 
-    print("Playing audio. Press 'Y' to pause, 'X' to stop.")
+    print("Playing audio.")
 
     while pygame.mixer.music.get_busy():
-        if keyboard.is_pressed("y"):
-            pygame.mixer.music.pause()
-            print("Audio paused. Press 'Y' to resume, 'X' to stop.")
-
-        if keyboard.is_pressed("x"):
-            pygame.mixer.music.stop()
-            print("Audio stopped.")
-            break
-
-        pygame.time.Clock().tick(10)
+        pass
 
     if file_path == "audio.mp3":
         os.remove(file_path)

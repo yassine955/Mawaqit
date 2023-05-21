@@ -4,7 +4,7 @@ import os
 
 
 def play_audio(file_path):
-    pygame.mixer.init()
+    pygame.mixer.init(frequency=44100, channels=2)
     pygame.mixer.music.load(file_path)
     pygame.mixer.music.play()
 

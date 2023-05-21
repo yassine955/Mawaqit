@@ -26,8 +26,11 @@ except pygame.error as e:
 
 def fetch_prayer_times():
     # Send a GET request to the website
+
+    cookies = {"currentCity": "29263"}
+
     url = "https://www.al-yaqeen.com/gebedstijden/"
-    response = requests.get(url)
+    response = requests.get(url, cookies=cookies)
 
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, "html.parser")

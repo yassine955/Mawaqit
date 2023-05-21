@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, time
 import time as t
+import os
+
 
 from pathlib import Path
 
@@ -9,12 +11,14 @@ import pygame
 
 pygame.init()
 
+current_path = os.getcwd()
+
 
 print("start")
 print(datetime.now().time().replace(second=0, microsecond=0).strftime("%H:%M"))
 
 try:
-    my_sound = pygame.mixer.Sound("beep.mp3")
+    my_sound = pygame.mixer.Sound(os.path.join(current_path, "beep.mp3"))
     my_sound.play()
 except pygame.error as e:
     print("Error playing audio:", e)
@@ -81,7 +85,7 @@ while True:
         # Play audio file when it's time for prayer
         # playsound("azan5.mp3")
 
-        x = pygame.mixer.Sound("azan5.mp3")
+        x = pygame.mixer.Sound(os.path.join(current_path, "azan5.mp3")
 
         x.play()
 

@@ -42,8 +42,9 @@ while True:
                 current_time = datetime.datetime.now().strftime("%H:%M")
 
                 for time_element in time_elements:
-                    print(time_element.get_text(strip=True))
-                    print(time_element.get_text(strip=True) == current_time)
+                    print(
+                        f"Gebed is om: {time_element.get_text(strip=True)} : Het is momenteel: {current_time} en {time_element.get_text(strip=True) == current_time}"
+                    )
 
                 # Check if the extracted times match the current time
                 if any(

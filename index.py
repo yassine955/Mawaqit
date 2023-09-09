@@ -1,100 +1,61 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, time
-import time as t
-import os
+from pygame import mixer
+import time
+import datetime
 
+# Set the URL and the cookie value
+url = "https://www.al-yaqeen.com/gebedstijden/"
+cookies = {"currentCity": "29263"}
 
-from pathlib import Path
+# Initialize pygame.mixer
+mixer.init()
 
-import pygame
+print("script started")
 
-pygame.init()
-
-current_path = os.getcwd()
-
-
-print("start")
-print(datetime.now().time().replace(second=0, microsecond=0).strftime("%H:%M"))
-
-try:
-    my_sound = pygame.mixer.Sound(os.path.join(current_path, "beep.wav"))
-    my_sound.play()
-except pygame.error as e:
-    print("Error playing audio:", e)
-
-
-def fetch_prayer_times():
-    # Send a GET request to the website
-
-    cookies = {"currentCity": "29263"}
-
-    url = "https://www.al-yaqeen.com/gebedstijden/"
-    response = requests.get(url, cookies=cookies)
-
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.content, "html.parser")
-
-    # Find the table row with class "current"
-    table_row = soup.find("tr", class_="prayer-table__day current")
-
-    # Extract the prayer times from the table row
-    prayer_times = [td.get_text(strip=True) for td in table_row.find_all("td")]
-
-    # Convert prayer times to datetime objects without seconds
-    prayer_times = [
-        datetime.strptime(time_str, "%H:%M").time().strftime("%H:%M")
-        for time_str in prayer_times
-    ]
-
-    return prayer_times
-
-
-# Fetch and scrape the website initially
-prayer_times = fetch_prayer_times()
-
-# Remove the second value from the prayer times list if it exists
-if len(prayer_times) >= 2:
-    prayer_times.pop(1)
-
-print(prayer_times)
-
-# Set the target time for fetching and scraping
-target_time = datetime.now().replace(hour=0, minute=10, second=0, microsecond=0).time()
-
-# Calculate the remaining seconds until the next minute
-remaining_seconds = (60 - datetime.now().second) % 60
-
-# Delay until the next minute
-t.sleep(remaining_seconds)
-
-
-# Check if it's time for fetching and scraping
 while True:
-    current_time = (
-        datetime.now().time().replace(second=0, microsecond=0).strftime("%H:%M")
-    )
-    print(current_time)
+    try:
+        # Calculate the time until the next minute
+        current_time = datetime.datetime.now()
+        seconds_until_next_minute = 60 - current_time.second
 
-    if current_time == target_time:
-        prayer_times = fetch_prayer_times()
-        if len(prayer_times) >= 2:
-            prayer_times.pop(1)
+        # Wait for the next minute
+        time.sleep(seconds_until_next_minute)
 
-        print("Prayer times fetched and scraped.")
+        # Send a GET request with the cookie
+        response = requests.get(url, cookies=cookies)
 
-    if current_time in prayer_times:
-        print(f"It's time for prayer: {current_time}")
-        # Play audio file when it's time for prayer
-        # playsound("azan5.wav")
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the HTML content of the page
+            soup = BeautifulSoup(response.text, "html.parser")
 
-        x = pygame.mixer.Sound(os.path.join(current_path, "azan5.wav"))
+            # Find the table row with the class "prayer-table__day current"
+            current_row = soup.find("tr", class_="prayer-table__day current")
 
-        x.play()
+            if current_row:
+                # Extract all the <td> elements within the row except the second one
+                time_elements = current_row.find_all("td")
+                time_elements.pop(1)  # Remove the second element
 
-    else:
-        # playsound("beep.wav")
-        print(f"Not time: {current_time}")
+                # Get the current time in HH:MM format
+                current_time = datetime.datetime.now().strftime("%H:%M")
 
-    # Delay for 1 minute before checking again
-    t.sleep(60)
+                for time_element in time_elements:
+                    print(time_element.get_text(strip=True))
+                    print(time_element.get_text(strip=True) == current_time)
+
+                # Check if the extracted times match the current time
+                if any(
+                    time_element.get_text(strip=True) == current_time
+                    for time_element in time_elements
+                ):
+                    print("It's time to pray!")
+
+                    # Play the "beep.wav" sound
+                    mixer.music.load("azan5.wav")
+                    mixer.music.play()
+
+    except KeyboardInterrupt:
+        # Exit the loop if Ctrl+C is pressed
+        break

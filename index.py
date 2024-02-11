@@ -48,7 +48,8 @@ while True:
 
                 # Check if the extracted times match the current time
                 if any(
-                    time_element.get_text(strip=True) == current_time
+                    time_element.get_text(strip=True)
+                    == time_element.get_text(strip=True)
                     for time_element in time_elements
                 ):
                     print("It's time to pray!")

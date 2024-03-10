@@ -1,61 +1,54 @@
 import requests
-from bs4 import BeautifulSoup
-from pygame import mixer
-import time
+import json
 import datetime
-
-# Set the URL and the cookie value
-url = "https://www.al-yaqeen.com/gebedstijden/"
-cookies = {"currentCity": "29263"}
+import time
+from pygame import mixer
 
 # Initialize pygame.mixer
 mixer.init()
 
-print("script started")
+# Load the schedule from the JSON
+with open("schedule.json", "r") as file:
+    schedule = json.load(file)["schedule"]
+
+print("Script started")
 
 while True:
     try:
-        # Calculate the time until the next minute
-        current_time = datetime.datetime.now()
-        seconds_until_next_minute = 60 - current_time.second
+        # Get the current date and time
+        current_datetime = datetime.datetime.now()
+
+        # Get the current day number (1-31)
+        current_day_number = current_datetime.day
+
+        # Get the current time in HH:MM format
+        current_time = current_datetime.strftime("%H:%M")
+
+        print(f"Current date: {current_day_number}, time: {current_time}")
+
+        # Find the entry for the current day in the schedule
+        current_day_schedule = next(
+            (
+                day_schedule
+                for day_schedule in schedule
+                if day_schedule["day_number"] == current_day_number
+            ),
+            None,
+        )
+
+        if current_day_schedule:
+            print(current_day_schedule["times"][:4] + current_day_schedule["times"][5:])
+            # Check if the current time matches any time in the schedule for the current day (excluding the 5th value)
+            if (
+                current_time
+                in current_day_schedule["times"][:4] + current_day_schedule["times"][5:]
+            ):
+                print("It's time!")
+                mixer.music.load("azan5.wav")
+                mixer.music.play()
 
         # Wait for the next minute
-        time.sleep(seconds_until_next_minute)
-
-        # Send a GET request with the cookie
-        response = requests.get(url, cookies=cookies)
-
-        # Check if the request was successful
-        if response.status_code == 200:
-            # Parse the HTML content of the page
-            soup = BeautifulSoup(response.text, "html.parser")
-
-            # Find the table row with the class "prayer-table__day current"
-            current_row = soup.find("tr", class_="prayer-table__day current")
-
-            if current_row:
-                # Extract all the <td> elements within the row except the second one
-                time_elements = current_row.find_all("td")
-                time_elements.pop(1)  # Remove the second element
-
-                # Get the current time in HH:MM format
-                current_time = datetime.datetime.now().strftime("%H:%M")
-
-                for time_element in time_elements:
-                    print(
-                        f"Gebed is om: {time_element.get_text(strip=True)} : Het is momenteel: {current_time} en {time_element.get_text(strip=True) == current_time}"
-                    )
-
-                # Check if the extracted times match the current time
-                if any(
-                    time_element.get_text(strip=True) == current_time
-                    for time_element in time_elements
-                ):
-                    print("It's time to pray!")
-
-                    # Play the "beep.wav" sound
-                    mixer.music.load("azan5.wav")
-                    mixer.music.play()
+        time.sleep(60 - current_datetime.second)
 
     except KeyboardInterrupt:
         # Exit the loop if Ctrl+C is pressed

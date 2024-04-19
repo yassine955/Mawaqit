@@ -1,55 +1,53 @@
-import requests
-import json
-import datetime
+from datetime import datetime
 import time
 from pygame import mixer
+import requests
+from bs4 import BeautifulSoup
 
 # Initialize pygame.mixer
 mixer.init()
 
-# Load the schedule from the JSON
-with open("schedule.json", "r") as file:
-    schedule = json.load(file)["schedule"]
 
-print("Script started")
+# Function to parse time string to datetime object
+def parse_time(time_str):
+    return datetime.strptime(time_str, "%H:%M")
+
+
+# Function to check if current time is in the list of prayer times
+def check_prayer_times():
+    # Get current time
+    current_time = datetime.now().strftime("%H:%M")
+
+    url = "https://www.al-yaqeen.com/gebedstijden/"
+
+    cookies = {"currentCity": "29263"}
+
+    response = requests.get(url, cookies=cookies)
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Find the specific table row containing the prayer times
+    prayer_table_row = soup.find("tr", class_="prayer-table__day current")
+
+    # Extract all the prayer times from the specified row
+    times = [td.get_text(strip=True) for td in prayer_table_row.find_all("td")]
+
+    # Remove the second element from the list
+    if len(times) >= 2:
+        del times[1]
+
+    print(times)
+
+    # Check if current time is present in the list of prayer times
+    if current_time in times:
+        print("Current time is present in the list of prayer times.")
+        mixer.music.load("mecca.mp3")
+        mixer.music.play()
+    else:
+        print("Current time is not present in the list of prayer times.")
+
 
 while True:
-    try:
-        # Get the current date and time
-        current_datetime = datetime.datetime.now()
-
-        # Get the current day number (1-31)
-        current_day_number = current_datetime.day
-
-        # Get the current time in HH:MM format
-        current_time = current_datetime.strftime("%H:%M")
-
-        print(f"Current date: {current_day_number}, time: {current_time}")
-
-        # Find the entry for the current day in the schedule
-        current_day_schedule = next(
-            (
-                day_schedule
-                for day_schedule in schedule
-                if day_schedule["day_number"] == current_day_number
-            ),
-            None,
-        )
-
-        if current_day_schedule:
-            print(current_day_schedule["times"][:4] + current_day_schedule["times"][5:])
-            # Check if the current time matches any time in the schedule for the current day (excluding the 5th value)
-            if (
-                current_time
-                in current_day_schedule["times"][:4] + current_day_schedule["times"][5:]
-            ):
-                print("It's time!")
-                mixer.music.load("azan5.wav")
-                mixer.music.play()
-
-        # Wait for the next minute
-        time.sleep(60 - current_datetime.second)
-
-    except KeyboardInterrupt:
-        # Exit the loop if Ctrl+C is pressed
-        break
+    now = datetime.now()
+    seconds_until_next_minute = 60 - now.second
+    time.sleep(seconds_until_next_minute)
+    check_prayer_times()

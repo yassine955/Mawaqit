@@ -4,8 +4,12 @@ from pygame import mixer
 import requests
 from bs4 import BeautifulSoup
 
+
 # Initialize pygame.mixer
 mixer.init()
+
+# Global variable to track the current audio file
+current_audio = "adhan.mp3"
 
 
 # Function to parse time string to datetime object
@@ -15,11 +19,12 @@ def parse_time(time_str):
 
 # Function to check if current time is in the list of prayer times
 def check_prayer_times():
+    global current_audio
+
     # Get current time
     current_time = datetime.now().strftime("%H:%M")
 
     url = "https://www.al-yaqeen.com/gebedstijden/"
-
     cookies = {"currentCity": "29263"}
 
     response = requests.get(url, cookies=cookies)
@@ -40,13 +45,20 @@ def check_prayer_times():
     # Check if current time is present in the list of prayer times
     if current_time in times:
         print("Current time is present in the list of prayer times.")
-        mixer.music.load("mecca.mp3")
+        mixer.music.load(current_audio)
         mixer.music.play()
+
+        # Toggle the audio file for the next call
+        if current_audio == "adhan.mp3":
+            current_audio = "azan5.wav"
+        else:
+            current_audio = "adhan.mp3"
     else:
         print("Current time is not present in the list of prayer times.")
 
 
 while True:
+
     now = datetime.now()
     seconds_until_next_minute = 60 - now.second
     time.sleep(seconds_until_next_minute)

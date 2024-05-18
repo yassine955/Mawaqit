@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import pygame
 import tempfile
@@ -45,8 +46,11 @@ def play_mp3(file_path):
 
 
 if __name__ == "__main__":
-    # Ask for the path to the MP3 file or URL
-    file_or_url = input("Please enter the path to the MP3 file or URL: ")
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <link to MP3 URL>")
+        sys.exit(1)
+
+    file_or_url = sys.argv[1]
 
     # Check if it's a URL
     if file_or_url.startswith("http://") or file_or_url.startswith("https://"):

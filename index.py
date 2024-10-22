@@ -19,14 +19,18 @@ adhan_sound = "audio/azan5.wav"
 
 get_prayer_times_to_json(response, config)
 
-list_of_times = get_current_time()
-
-print(list_of_times)
-
 
 def check_prayer_times():
 
+    print(
+        f"------------------------------XXXXXXXXXXXXXXXXXXX--------------------------"
+    )
+    list_of_times = get_current_time()
+
     current_time = datetime.now().strftime("%H:%M")
+
+    print(f"Current time: {current_time}")
+    print(f"Today's Times: {list_of_times}")
 
     # Check if current time is present in the list of prayer times
     if current_time in list_of_times:
@@ -37,6 +41,8 @@ def check_prayer_times():
     else:
         print("Current time is not present in the list of prayer times.")
 
+
+check_prayer_times()
 
 while True:
 

@@ -33,6 +33,8 @@ def get_current_time() -> List[str]:
     month = datetime.now().month - 1
     day = datetime.now().day
 
+    print(f"Current Month {month} and current day {day}")
+
     times = list(calendar[month][str(day)])
 
     times.pop(1)

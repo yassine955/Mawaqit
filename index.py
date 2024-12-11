@@ -15,7 +15,7 @@ from functions.get_config import get_config
 mixer.init()
 config = get_config()
 response = requests.get(config["uri"])
-adhan_sound = "audio/azan5.wav"
+adhan_sound = "audio/haram.wav"
 
 get_prayer_times_to_json(response, config)
 

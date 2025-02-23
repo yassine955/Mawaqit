@@ -37,6 +37,4 @@ def get_current_time() -> List[str]:
 
     times = list(calendar[month][str(day)])
 
-    times.pop(1)
-
     return times
